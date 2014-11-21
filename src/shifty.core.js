@@ -158,12 +158,22 @@ var Tweenable = (function () {
    * @param {Object} easing
    * @param {Function(Object, *, number)} step
    * @param {Function(Function,number)}} schedule
+   * @param {number=} opt_currentTimeOverride Needed for accurate timestamp in
+   * Tweenable#seek.
    */
   function timeoutHandler (tweenable, timestamp, duration, currentState,
-    originalState, targetState, easing, step, schedule, currentTime) {
-    timeoutHandler_currentTime = currentTime || now();
+    originalState, targetState, easing, step, schedule,
+    opt_currentTimeOverride) {
+
     timeoutHandler_endTime = timestamp + duration;
-    timeoutHandler_currentTime = Math.min(timeoutHandler_currentTime, timeoutHandler_endTime);
+
+    if (opt_currentTimeOverride) {
+      timeoutHandler_currentTime =
+        Math.min(opt_currentTimeOverride, timeoutHandler_endTime);
+    } else {
+      timeoutHandler_currentTime = Math.min(now(), timeoutHandler_endTime);
+    }
+
     timeoutHandler_isEnded =
       timeoutHandler_currentTime >= timeoutHandler_endTime;
 
@@ -309,7 +319,7 @@ var Tweenable = (function () {
     this._timeoutHandler = function (currentTime) {
       timeoutHandler(self, self._timestamp, self._duration, self._currentState,
         self._originalState, self._targetState, self._easing, self._step,
-        self._scheduleFunction, currentTime);
+        self._scheduleFunction);
     };
 
     // Aliases used below
@@ -397,7 +407,9 @@ var Tweenable = (function () {
 
       // If the animation is not running, call timeoutHandler to make sure that
       // any step handlers are run.
-      this._timeoutHandler(currentTime);
+      timeoutHandler(this, this._timestamp, this._duration, this._currentState,
+        this._originalState, this._targetState, this._easing, this._step,
+        this._scheduleFunction, currentTime);
 
       this.pause();
     }
