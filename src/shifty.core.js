@@ -316,7 +316,7 @@ var Tweenable = (function () {
     this._targetState = shallowCopy({}, config.to) || this.get();
 
     var self = this;
-    this._timeoutHandler = function (currentTime) {
+    this._timeoutHandler = function () {
       timeoutHandler(self, self._timestamp, self._duration, self._currentState,
         self._originalState, self._targetState, self._easing, self._step,
         self._scheduleFunction);
