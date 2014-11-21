@@ -167,12 +167,8 @@ var Tweenable = (function () {
 
     timeoutHandler_endTime = timestamp + duration;
 
-    if (opt_currentTimeOverride) {
-      timeoutHandler_currentTime =
-        Math.min(opt_currentTimeOverride, timeoutHandler_endTime);
-    } else {
-      timeoutHandler_currentTime = Math.min(now(), timeoutHandler_endTime);
-    }
+    timeoutHandler_currentTime =
+      Math.min(opt_currentTimeOverride || now(), timeoutHandler_endTime);
 
     timeoutHandler_isEnded =
       timeoutHandler_currentTime >= timeoutHandler_endTime;
